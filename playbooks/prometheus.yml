@@ -1,0 +1,53 @@
+- name: Install Prometheus and Node Exporter
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install Prometheus
+      ansible.builtin.apt:
+        name: prometheus
+        state: present
+
+    - name: Install Node Exporter
+      ansible.builtin.apt:
+        name: prometheus-node-exporter
+        state: present
+
+    - name: Configure Prometheus
+      ansible.builtin.copy:
+        dest: /etc/prometheus/prometheus.yml
+        content: |
+          global:
+            scrape_interval: 15s
+          scrape_configs:
+            - job_name: 'prometheus'
+              scrape_interval: 5s
+              static_configs:
+                - targets: ['localhost:9090']
+            - job_name: 'node_exporter'
+              scrape_interval: 5s
+              static_configs:
+                - targets: ['localhost:9100']
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart Prometheus
+
+    - name: Start services
+      ansible.builtin.service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - prometheus
+        - prometheus-node-exporter
+
+  handlers:
+    - name: Restart Prometheus
+      ansible.builtin.service:
+        name: prometheus
+        state: restarted
