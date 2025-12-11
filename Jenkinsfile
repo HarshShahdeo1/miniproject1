@@ -18,7 +18,7 @@ pipeline {
             }
         }
 
-        stage('Ansible Deployment') {
+        stage('Ansible Deployment') { 
             steps {
                 script {
                     def instanceIP = readFile('inventory.ini').trim()
@@ -46,4 +46,4 @@ pipeline {
             }
         }
     }
-}
+}//addiRan
