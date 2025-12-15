@@ -36,7 +36,7 @@ pipeline {
                             count=\$((count+1))
                             if [ \$count -ge 24 ]; then echo "Timeout waiting for SSH"; exit 1; fi
                         done
-                        echo "Server is Ready!"
+                        echo "Server is Readyyyyyyyyyyyyyyyyyy!"
                     """
                 }
                 
@@ -46,4 +46,4 @@ pipeline {
             }
         }
     }
-}//addiRan
+}
